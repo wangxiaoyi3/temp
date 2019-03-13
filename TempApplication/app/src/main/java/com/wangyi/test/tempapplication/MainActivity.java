@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -29,32 +30,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-//        init();
+        init();
     }
 
 
     private void initView() {
         btn1 = (Button) findViewById(R.id.btn1);
         btn2 = (Button) findViewById(R.id.btn2);
-//        switch1 = (Switch) findViewById(R.id.switch1);
-//        ll = (LinearLayout) findViewById(R.id.ll);
-//        tv1 = (TextView) findViewById(R.id.tv1);
-//        switch1.setChecked(false);
-//        switch1.setSwitchTextAppearance(MainActivity.this, R.style.switch_false);
-//        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                if (b) {
-//                    switch1.setSwitchTextAppearance(MainActivity.this, R.style.switch_true);
-//                    SharedPreUtils.putBoolean(MainActivity.this, "pattern", true);
-//                    SetColor.night();
-//                } else {
-//                    switch1.setSwitchTextAppearance(MainActivity.this, R.style.switch_false);
-//                    SharedPreUtils.putBoolean(MainActivity.this, "pattern", false);
-//                    SetColor.day();
-//                }
-//            }
-//        });
+        switch1 = (Switch) findViewById(R.id.switch1);
+        ll = (LinearLayout) findViewById(R.id.ll);
+        tv1 = (TextView) findViewById(R.id.tv1);
+        switch1.setChecked(false);
+        switch1.setSwitchTextAppearance(MainActivity.this, R.style.switch_false);
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    switch1.setSwitchTextAppearance(MainActivity.this, R.style.switch_true);
+                    SharedPreUtils.putBoolean(MainActivity.this, "pattern", true);
+                    SetColor.night();
+                } else {
+                    switch1.setSwitchTextAppearance(MainActivity.this, R.style.switch_false);
+                    SharedPreUtils.putBoolean(MainActivity.this, "pattern", false);
+                    SetColor.day();
+                }
+            }
+        });
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
     }
