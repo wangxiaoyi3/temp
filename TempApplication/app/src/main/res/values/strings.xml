@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">TempApplication</string>
+    <string name="btn1">获取屏幕大小</string>
+    <string name="btn2">获取系统版本</string>
+    <string name="switch1">夜间模式</string>
+</resources>
