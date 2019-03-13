@@ -13,6 +13,7 @@ import com.wangyi.test.tempapplication.utils.DialogUtils;
 import com.wangyi.test.tempapplication.utils.LogUtils;
 import com.wangyi.test.tempapplication.utils.ScreenUtils;
 import com.wangyi.test.tempapplication.utils.SharedPreUtils;
+import com.wangyi.test.tempapplication.utils.VersionUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         btn1 = (Button) findViewById(R.id.btn1);
-//        btn2 = (Button) findViewById(R.id.btn2);
+        btn2 = (Button) findViewById(R.id.btn2);
 //        switch1 = (Switch) findViewById(R.id.switch1);
 //        ll = (LinearLayout) findViewById(R.id.ll);
 //        tv1 = (TextView) findViewById(R.id.tv1);
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
         btn1.setOnClickListener(this);
-//        btn2.setOnClickListener(this);
+        btn2.setOnClickListener(this);
     }
 
     @Override
@@ -69,11 +70,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 LogUtils.d("高："+height);
                 DialogUtils.normal(this, "屏幕尺寸", width + "X" + height);
                 break;
-//            case R.id.btn2:
-//                int version = VersionUtils.getVersion();
-//                LogUtils.d("SDK："+version);
-//                DialogUtils.normal(this, "系统版本", "SDK："+version);
-//                break;
+            case R.id.btn2:
+                int version = VersionUtils.getVersion();
+                LogUtils.d("SDK："+version);
+                DialogUtils.normal(this, "系统版本", "SDK："+version);
+                break;
         }
     }
 
