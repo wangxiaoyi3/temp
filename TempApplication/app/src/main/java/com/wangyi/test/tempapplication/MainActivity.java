@@ -67,13 +67,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ScreenUtils.init(MainActivity.this);
                 int width = ScreenUtils.width;
                 int height = ScreenUtils.height;
-//                LogUtils.d("宽："+width);
-//                LogUtils.d("高："+height);
+                LogUtils.d("宽："+width);
+                LogUtils.d("高："+height);
                 DialogUtils.normal(this, "屏幕尺寸", width + "X" + height);
                 break;
             case R.id.btn2:
                 int version = VersionUtils.getVersion();
-//                LogUtils.d("SDK："+version);
+                LogUtils.d("SDK："+version);
                 DialogUtils.normal(this, "系统版本", "SDK："+version);
                 break;
         }
