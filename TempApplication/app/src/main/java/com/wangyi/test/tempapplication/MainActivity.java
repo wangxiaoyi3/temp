@@ -2,21 +2,23 @@ package com.wangyi.test.tempapplication;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.wangyi.test.tempapplication.base.BaseActivity;
 import com.wangyi.test.tempapplication.utils.DialogUtils;
 import com.wangyi.test.tempapplication.utils.LogUtils;
 import com.wangyi.test.tempapplication.utils.ScreenUtils;
 import com.wangyi.test.tempapplication.utils.SharedPreUtils;
 import com.wangyi.test.tempapplication.utils.VersionUtils;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private Button btn1;
     private Button btn2;
@@ -33,6 +35,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         init();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Toast.makeText(this,"点击了返回键",Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void initView() {
         btn1 = (Button) findViewById(R.id.btn1);
