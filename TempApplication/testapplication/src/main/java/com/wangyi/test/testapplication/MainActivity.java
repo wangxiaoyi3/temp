@@ -17,18 +17,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText et_num;
     private Button btn_call;
     private String num;
-//    private String[] permission;
+    private String[] permission;
+    private List<String> permissionList = new ArrayList<>();
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        initData();
+        initData();
         initView();
     }
 
@@ -42,13 +47,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 初始化权限数组
      */
-//    private void initData() {
-//        permission = new String[] {
-//                Manifest.permission.CALL_PHONE,
-//                Manifest.permission.READ_PHONE_NUMBERS,
-//                Manifest.permission.READ_PHONE_STATE,
-//        };
-//    }
+    private void initData() {
+        permission = new String[] {
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+    }
 
     @Override
     public void onClick(View v) {
@@ -79,9 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void callPhone(String number) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
         startActivity(intent);
     }
 
@@ -90,41 +92,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void checkPeriPermission() {
         //判断是否拥有权限
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE)
+        permissionList.clear();
+        for (int i=0; i<permission.length; i++) {
+            if (ContextCompat.checkSelfPermission(this,permission[i])
                     != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE},1);
+               permissionList.add(permission[i]);
             }
-            else {
-                Toast.makeText(this,"你已经申请了权限！", Toast.LENGTH_SHORT).show();
-                callPhone(num);
-            }
-
+        }
+        if (!permissionList.isEmpty()) {
+            String[] permissions = permissionList.toArray(new String[permissionList.size()]);
+            ActivityCompat.requestPermissions(this, permissions, 1);
+        }
+        else {
+            Toast.makeText(this,"你已经申请了权限！", Toast.LENGTH_SHORT).show();
+            callPhone(num);
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean hasPermissionDismiss = false;
         if (requestCode == 1) {
-            Log.d("MainActivity", "权限数量: "+permissions.length);
-            for (int i=0; i<permissions.length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) { //选择了允许
-                    Toast.makeText(this,"申请权限成功！", Toast.LENGTH_SHORT).show();
-                    callPhone(num);
-                }
-                else {
-                    //选择了禁止
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,permissions[i])) {
-                        Toast.makeText(this,"授权失败！", Toast.LENGTH_SHORT).show();
-                        ActivityCompat.requestPermissions(this,permissions,1);
+            Log.d(TAG, "权限数量: "+permissions.length);
+//            for (int i=0; i<permissions.length; i++) {
+//                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) { //选择了允许
+//                    Toast.makeText(this,"申请权限成功！", Toast.LENGTH_SHORT).show();
+//                    callPhone(num);
+//                }
+//                else {
+//                    //选择了禁止
+//                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,permissions[i])) {
+//                        Toast.makeText(this,"授权失败！", Toast.LENGTH_SHORT).show();
+//                        ActivityCompat.requestPermissions(this,permissions,1);
+//                    }
+//                    else { //选择了禁止并不在询问
+//                        Toast.makeText(this,"请在设置里添加该权限！", Toast.LENGTH_SHORT).show();
+//                        Intent intent =  new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+//                        intent.setData(uri);
+//                        startActivityForResult(intent, 2);
+//                    }
+//                }
+//            }
+            for (int i=0; i<grantResults.length; i++) {
+                Log.d(TAG, permissions[i]+" 状态: "+grantResults[i]);
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    //判断是否选择了禁止后不再询问
+                    boolean showRequestPermission = ActivityCompat.shouldShowRequestPermissionRationale(
+                            this, permissions[i]);
+                    if (showRequestPermission) { //选择了禁止，重新申请权限
+                        checkPeriPermission();
+                        return;
                     }
-                    else { //选择了禁止并不在询问
+                    else { //选择了禁止并且勾选了不在询问
                         Toast.makeText(this,"请在设置里添加该权限！", Toast.LENGTH_SHORT).show();
                         Intent intent =  new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
                         intent.setData(uri);
                         startActivityForResult(intent, 2);
                     }
+                    hasPermissionDismiss = true;
                 }
+            }
+            if (!hasPermissionDismiss) {
+                callPhone(num);
             }
         }
 
