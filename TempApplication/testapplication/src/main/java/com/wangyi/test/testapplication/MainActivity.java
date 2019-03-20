@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -28,27 +29,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String[] permission;
     private List<String> permissionList = new ArrayList<>();
     private static final String TAG = "MainActivity";
+    private ViewStub vs;
+    private boolean isInflate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.startup);
+        initViewStub();
         initData();
-        initView();
+        checkPeriPermission();
     }
 
     private void initView() {
         et_num = (EditText) findViewById(R.id.et_num);
         btn_call = (Button) findViewById(R.id.btn_call);
-
         btn_call.setOnClickListener(this);
+    }
+    private void initViewStub() {
+        vs = (ViewStub) findViewById(R.id.vs);
+        vs.setOnInflateListener(new ViewStub.OnInflateListener() {
+            @Override
+            public void onInflate(ViewStub viewStub, View view) {
+                isInflate = true;
+            }
+        });
     }
 
     /**
      * 初始化权限数组
      */
     private void initData() {
-        permission = new String[] {
+        permission = new String[]{
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -80,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 执行拨号操作
+     *
      * @param number
      */
     private void callPhone(String number) {
@@ -93,19 +106,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void checkPeriPermission() {
         //判断是否拥有权限
         permissionList.clear();
-        for (int i=0; i<permission.length; i++) {
-            if (ContextCompat.checkSelfPermission(this,permission[i])
+        for (int i = 0; i < permission.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permission[i])
                     != PackageManager.PERMISSION_GRANTED) {
-               permissionList.add(permission[i]);
+                permissionList.add(permission[i]);
             }
         }
         if (!permissionList.isEmpty()) {
             String[] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(this, permissions, 1);
-        }
-        else {
-            Toast.makeText(this,"你已经申请了权限！", Toast.LENGTH_SHORT).show();
-            callPhone(num);
+        } else {
+            if (!isInflate) { //判断ViewStub是否inflate
+                vs.inflate();
+                initView();
+            }
+            if (!TextUtils.isEmpty(num)) {
+                Toast.makeText(this, "你已经申请了权限！", Toast.LENGTH_SHORT).show();
+                callPhone(num);
+            }
         }
     }
 
@@ -114,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean hasPermissionDismiss = false;
         if (requestCode == 1) {
-            Log.d(TAG, "权限数量: "+permissions.length);
+            Log.d(TAG, "权限数量: " + permissions.length);
 //            for (int i=0; i<permissions.length; i++) {
 //                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) { //选择了允许
 //                    Toast.makeText(this,"申请权限成功！", Toast.LENGTH_SHORT).show();
@@ -135,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    }
 //                }
 //            }
-            for (int i=0; i<grantResults.length; i++) {
-                Log.d(TAG, permissions[i]+" 状态: "+grantResults[i]);
+            for (int i = 0; i < grantResults.length; i++) {
+                Log.d(TAG, permissions[i] + " 状态: " + grantResults[i]);
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     //判断是否选择了禁止后不再询问
                     boolean showRequestPermission = ActivityCompat.shouldShowRequestPermissionRationale(
@@ -144,10 +162,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (showRequestPermission) { //选择了禁止，重新申请权限
                         checkPeriPermission();
                         return;
-                    }
-                    else { //选择了禁止并且勾选了不在询问
-                        Toast.makeText(this,"请在设置里添加该权限！", Toast.LENGTH_SHORT).show();
-                        Intent intent =  new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    } else { //选择了禁止并且勾选了不在询问
+                        Toast.makeText(this, "请在设置里添加该权限！", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
                         intent.setData(uri);
                         startActivityForResult(intent, 2);
@@ -156,7 +173,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             if (!hasPermissionDismiss) {
-                callPhone(num);
+                if (!isInflate) { //判断ViewStub是否inflate
+                    vs.inflate();
+                    initView();
+                }
+                Toast.makeText(this, "申请权限成功！", Toast.LENGTH_SHORT).show();
+                if (!TextUtils.isEmpty(num)) {
+                    callPhone(num);
+                }
             }
         }
 

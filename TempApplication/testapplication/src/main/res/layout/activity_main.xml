@@ -22,5 +22,4 @@
         android:textColor="#fff"
         android:drawableStart="@drawable/ic_local_phone"
         android:background="@drawable/btn_shape"/>
-
 </LinearLayout>
