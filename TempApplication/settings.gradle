@@ -1,1 +1,1 @@
-include ':app', ':testapplication', ':startapplication'
+include ':app', ':testapplication', ':startapplication', ':materaildesignapplication'

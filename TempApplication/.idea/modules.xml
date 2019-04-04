@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TempApplication.iml" filepath="$PROJECT_DIR$/TempApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/materaildesignapplication/materaildesignapplication.iml" filepath="$PROJECT_DIR$/materaildesignapplication/materaildesignapplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/startapplication/startapplication.iml" filepath="$PROJECT_DIR$/startapplication/startapplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/testapplication/testapplication.iml" filepath="$PROJECT_DIR$/testapplication/testapplication.iml" />
     </modules>
